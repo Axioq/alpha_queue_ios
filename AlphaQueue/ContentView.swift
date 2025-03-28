@@ -7,25 +7,25 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var progressList: [ShowProgress] = []
-
     var body: some View {
-        NavigationView {
-            List(progressList) { item in
-                VStack(alignment: .leading) {
-                    Text(item.name).font(.headline)
-                    Text("S\(item.season) E\(item.episode)")
-                    Text("Watched at \(item.watched_at)")
-                        .font(.caption)
-                        .foregroundColor(.gray)
+        TabView {
+            SearchView()
+                .tabItem {
+                    Image(systemName: "magnifyingglass")
+                    Text("Search")
                 }
-            }
-            .navigationTitle("TV Progress")
-            .onAppear {
-                APIService.shared.fetchProgress { progress in
-                    self.progressList = progress
+            
+            ProgressView()
+                .tabItem {
+                    Image(systemName: "clock")
+                    Text("Progress")
                 }
-            }
         }
+    }
+}
+
+struct ContentView_Previews: PreviewProvider {
+    static var previews: some View {
+        ContentView()
     }
 }

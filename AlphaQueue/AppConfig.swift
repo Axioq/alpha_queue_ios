@@ -8,22 +8,31 @@
 import Foundation
 
 struct AppConfig {
+    // Non-sensitive configuration from Config.plist
     static var baseURL: String {
-        guard let url = getConfigValue(for: "BaseURL") else {
+        guard let value = getConfigValue(for: "BaseURL", from: "Config") else {
             fatalError("BaseURL not found in Config.plist")
         }
-        return url
+        return value
     }
     
     static var tmdbImageBaseURL: String {
-        guard let url = getConfigValue(for: "TMDBImageBaseURL") else {
+        guard let value = getConfigValue(for: "TMDBImageBaseURL", from: "Config") else {
             fatalError("TMDBImageBaseURL not found in Config.plist")
         }
-        return url
+        return value
     }
     
-    private static func getConfigValue(for key: String) -> String? {
-        if let path = Bundle.main.path(forResource: "Config", ofType: "plist"),
+    // Sensitive configuration from Secrets.plist
+    static var apiKey: String {
+        guard let value = getConfigValue(for: "API_KEY", from: "Secrets") else {
+            fatalError("API_KEY not found in Secrets.plist")
+        }
+        return value
+    }
+    
+    private static func getConfigValue(for key: String, from plistName: String) -> String? {
+        if let path = Bundle.main.path(forResource: plistName, ofType: "plist"),
            let dict = NSDictionary(contentsOfFile: path) as? [String: Any],
            let value = dict[key] as? String {
             return value
